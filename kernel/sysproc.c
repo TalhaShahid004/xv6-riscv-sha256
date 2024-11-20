@@ -91,3 +91,24 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64
+sys_sha256(void)
+{
+  const char *test_string = "Hello, World!";
+  unsigned char hash[32];
+
+  sha256((const unsigned char*)test_string, strlen(test_string), hash);
+  
+  printf("Input: %s\n", test_string);
+  printf("SHA-256 Hash: ");
+  for(int i = 0; i < 32; i++) {
+      if(hash[i] < 16) {
+          printf("0");
+      }
+      printf("%x", hash[i]);
+  }
+  printf("\n");
+
+  return 0;
+}

@@ -187,3 +187,7 @@ void            virtio_disk_intr(void);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
+// sha256.c
+void sha256(const unsigned char*, uint, unsigned char*);
+void sha256_transform(uint32*, const unsigned char*);
