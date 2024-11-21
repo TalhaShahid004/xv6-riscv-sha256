@@ -2,7 +2,7 @@
 #include "user/user.h"
 
 int main(int argc, char *argv[]) {
-    int result = sha256();  // Call it like this
+    int result = sha256();  
     if(result < 0) {
         printf("sha256 failed\n");
         exit(1);

@@ -30,6 +30,7 @@ OBJS = \
   $K/plic.o \
   $K/virtio_disk.o \
   $K/sha256.o \
+  $K/ksha256.o \
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
 # perhaps in /opt/riscv/bin
@@ -141,6 +142,7 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 	$U/_sha256\
+	$U/_usha256\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

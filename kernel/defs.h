@@ -191,3 +191,6 @@ void            virtio_disk_intr(void);
 // sha256.c
 void sha256(const unsigned char*, uint, unsigned char*);
 void sha256_transform(uint32*, const unsigned char*);
+
+// ksha256.c
+void ksha256(void);  
