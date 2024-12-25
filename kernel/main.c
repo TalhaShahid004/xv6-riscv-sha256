@@ -29,7 +29,10 @@ main()
     fileinit();      // file table
     virtio_disk_init(); // emulated hard disk
     userinit();      // first user process
+    uint64 start = r_time();
     ksha256(); 
+    uint64 end = r_time();
+    printf("The total time taken was %ld\n", (end - start));
     __sync_synchronize();
     started = 1;
   } else {

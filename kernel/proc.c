@@ -139,7 +139,9 @@ found:
     release(&p->lock);
     return 0;
   }
-
+  uint64 start = 0;
+  start = r_time();
+  p->startTime = start;
   // Set up new context to start executing at forkret,
   // which returns to user space.
   memset(&p->context, 0, sizeof(p->context));
@@ -343,46 +345,49 @@ reparent(struct proc *p)
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
 // until its parent calls wait().
-void
-exit(int status)
+static struct proc*
+allocproc(void)
 {
-  struct proc *p = myproc();
+  struct proc *p;
 
-  if(p == initproc)
-    panic("init exiting");
-
-  // Close all open files.
-  for(int fd = 0; fd < NOFILE; fd++){
-    if(p->ofile[fd]){
-      struct file *f = p->ofile[fd];
-      fileclose(f);
-      p->ofile[fd] = 0;
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state == UNUSED) {
+      goto found;
+    } else {
+      release(&p->lock);
     }
   }
+  return 0;
 
-  begin_op();
-  iput(p->cwd);
-  end_op();
-  p->cwd = 0;
+found:
+  p->pid = allocpid();
+  p->state = USED;
 
-  acquire(&wait_lock);
+  // Allocate a trapframe page.
+  if((p->trapframe = (struct trapframe *)kalloc()) == 0){
+    freeproc(p);
+    release(&p->lock);
+    return 0;
+  }
 
-  // Give any children to init.
-  reparent(p);
+  // An empty user page table.
+  p->pagetable = proc_pagetable(p);
+  if(p->pagetable == 0){
+    freeproc(p);
+    release(&p->lock);
+    return 0;
+  }
+  uint64 start = 0;
+  start = r_time();
+  p->startTime = start;
+  // Set up new context to start executing at forkret,
+  // which returns to user space.
+  memset(&p->context, 0, sizeof(p->context));
+  p->context.ra = (uint64)forkret;
+  p->context.sp = p->kstack + PGSIZE;
 
-  // Parent might be sleeping in wait().
-  wakeup(p->parent);
-  
-  acquire(&p->lock);
-
-  p->xstate = status;
-  p->state = ZOMBIE;
-
-  release(&wait_lock);
-
-  // Jump into the scheduler, never to return.
-  sched();
-  panic("zombie exit");
+  return p;
 }
 
 // Wait for a child process to exit and return its pid.
