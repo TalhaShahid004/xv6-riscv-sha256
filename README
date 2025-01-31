@@ -1,4 +1,4 @@
-# xv6-riscv-sha256
+## xv6-riscv-sha256
 
 <p align="center">
 This repository contains a modified version of the xv6 operating system, targeting the RISC-V architecture and integrating SHA-256 cryptographic hashing capabilities. It provides a learning platform for understanding operating system principles and practical cryptography application.
