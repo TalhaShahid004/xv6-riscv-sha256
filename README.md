@@ -29,7 +29,8 @@ This project is a modified implementation of the xv6 operating system, which is 
 
 1. **Compile the operating system and tools:**
     ```bash
-    make qemu
+    make clean
+    make
     ```
 
 2. **Run the operating system in QEMU:**
